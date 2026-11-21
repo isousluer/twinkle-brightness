@@ -1,0 +1,46 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the panel
+        2. Drag the slider of ...
+  - type: textarea
+    id: displays
+    attributes:
+      label: Display info
+      description: Right-click the tray icon, choose "Copy display info" and paste the result here. Also mention how each display is connected (HDMI, DisplayPort, USB-C, dock, adapter...).
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2 (26100.2033)
+    validations:
+      required: true
+  - type: input
+    id: windhawk
+    attributes:
+      label: Windhawk and mod version
+      placeholder: Windhawk 1.7.3, Twinkle Brightness 1.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Mod log
+      description: In Windhawk, open the mod, go to the Advanced tab and set logging to verbose. Reproduce the problem and paste the log.
+      render: text
