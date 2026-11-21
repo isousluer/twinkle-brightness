@@ -8,15 +8,18 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- "All displays" slider behavior setting. The new default, *relative*, moves
-  every display by the same amount and keeps their differences. *Absolute*
-  sets every display to the same level, as in 1.0.0.
+- **Link displays** button in the panel, like Twinkle Tray's. While linked
+  (the default), one slider sets all displays to the same level, and the
+  hotkeys and the mouse wheel change all of them. While unlinked, each display
+  has its own slider, the hotkeys change the display with the active window,
+  and the mouse wheel changes the display under the cursor. The choice is
+  remembered.
 
 ### Changed
 
 - The on-screen indicator shows one row per display (name, bar and level) when
-  a hotkey or the mouse wheel changes displays that are at different levels.
-  Previously it showed only the first display's level.
+  a hotkey changes displays that are at different levels. Previously it showed
+  only the first display's level.
 - The schedule and idle dimming no longer poll. The schedule sets a timer for
   the next entry and also reacts to clock changes. Idle dimming checks for
   input every second only while the displays are dimmed.
@@ -34,6 +37,11 @@ and this project follows [Semantic Versioning](https://semver.org/).
   overlapped the icon's position.
 - A display that keeps failing no longer triggers a re-detection more than
   once every 10 seconds.
+
+### Removed
+
+- The "Show an All displays slider" and mouse wheel "Displays to change"
+  settings. The link button replaces both.
 
 ## [1.0.0] - 2026-11-21
 

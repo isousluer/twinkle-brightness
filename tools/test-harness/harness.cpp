@@ -88,29 +88,33 @@ void RunLogicTests() {
     };
     g_displays = {fake(L"a", L"Left", 30), fake(L"b", L"Right", 70)};
 
-    // Relative "All displays" drag keeps differences, even past an edge.
-    g_settings.allDisplaysSliderRelative = true;
-    BeginAllDrag();
-    Check(g_allDragStart == 50, L"relative drag starts at the average");
-    g_allDragValue = 60;
-    ShiftAllDisplays(10, true);
-    Check(g_displays[0].value == 40 && g_displays[1].value == 80, L"relative drag +10 -> 40/80");
-    ShiftAllDisplays(40, true);
-    Check(g_displays[0].value == 70 && g_displays[1].value == 100, L"relative drag clamps at 100");
-    ShiftAllDisplays(0, true);
-    Check(g_displays[0].value == 30 && g_displays[1].value == 70, L"dragging back restores 30/70");
-    EndAllDrag();
-
-    // Absolute mode sets every display to the same level.
-    g_settings.allDisplaysSliderRelative = false;
+    // Linked: the shared slider, hotkeys and the wheel set all displays to
+    // the same level, starting from their average.
+    g_linked = true;
     PanelRow all{};
     all.display = -1;
+    Check(RowValue(all) == 50, L"linked slider shows the average");
     SetRowValue(all, 55);
-    Check(g_displays[0].value == 55 && g_displays[1].value == 55, L"absolute sets 55/55");
-    g_settings.allDisplaysSliderRelative = true;
+    Check(g_displays[0].value == 55 && g_displays[1].value == 55, L"linked slider sets 55/55");
+    g_displays[0].value = 30; g_displays[1].value = 70;
+    ChangeDisplays(DefaultTargets(nullptr), 10, -1, g_linked);
+    Check(g_displays[0].value == 60 && g_displays[1].value == 60, L"linked step from the average -> 60/60");
+
+    // Unlinked: only the display on the given monitor changes.
+    g_linked = false;
+    g_displays[0].info.monitor = (HMONITOR)1;
+    g_displays[1].info.monitor = (HMONITOR)2;
+    g_displays[0].value = 30; g_displays[1].value = 70;
+    auto right = DefaultTargets((HMONITOR)2);
+    ChangeDisplays(right, 10, -1, false);
+    Check(right.size() == 1 && g_displays[0].value == 30 && g_displays[1].value == 80, L"unlinked step changes only the active display");
+    Check(DefaultTargets((HMONITOR)3).empty(), L"unlinked: no display on an unknown monitor");
+    g_linked = true;
+    g_displays[1].value = 55;
 
     // OSD content.
     std::vector<UiDisplay*> targets = {&g_displays[0], &g_displays[1]};
+    g_displays[0].value = 55;
     Check(BuildOsdItems(targets).size() == 1, L"OSD: equal levels -> one row");
     g_displays[1].value = 80;
     auto items = BuildOsdItems(targets);
@@ -140,29 +144,38 @@ int wmain(int argc, wchar_t** argv) {
     WhTool_ModInit();
     Sleep(5000);
 
-    PostMessage(g_hwndMain, WM_APP_TRAY, 0, NIN_SELECT);
-    Sleep(2000);
-    RECT r;
-    GetWindowRect(g_hwndPanel, &r);
-    wprintf(L"panel visible=%d size=%dx%d\n", IsWindowVisible(g_hwndPanel),
-            (int)(r.right - r.left), (int)(r.bottom - r.top));
-    {
+    // The panel, linked (the default) and unlinked. The harness thread
+    // flips g_linked directly while the panel is hidden; nothing reaches
+    // the hardware, unlike SetLinked.
+    auto capturePanel = [&](PCWSTR suffix) {
+        PostMessage(g_hwndMain, WM_APP_TRAY, 0, NIN_SELECT);
+        Sleep(2000);
+        RECT r;
+        GetWindowRect(g_hwndPanel, &r);
+        wprintf(L"panel%s visible=%d size=%dx%d\n", suffix, IsWindowVisible(g_hwndPanel),
+                (int)(r.right - r.left), (int)(r.bottom - r.top));
         int w = r.right - r.left, h = r.bottom - r.top;
         HDC screen = GetDC(nullptr);
         HDC mem = CreateCompatibleDC(screen);
         HBITMAP bmp = CreateCompatibleBitmap(screen, w, h);
         SelectObject(mem, bmp);
         PrintWindow(g_hwndPanel, mem, 2);
-        wprintf(L"panel saved=%d\n", SavePng(bmp, (out + L"-panel.png").c_str()));
+        wprintf(L"panel%s saved=%d\n", suffix, SavePng(bmp, (out + L"-panel" + suffix + L".png").c_str()));
         DeleteDC(mem);
         DeleteObject(bmp);
         ReleaseDC(nullptr, screen);
-    }
-    ShowWindow(g_hwndPanel, SW_HIDE);
+        PostMessage(g_hwndMain, WM_APP_TRAY, 0, NIN_SELECT);
+        Sleep(600);
+    };
+    capturePanel(L"-linked");
+    g_linked = false;
+    capturePanel(L"");
 
-    // "+0%" hotkey: shows the indicator without changing brightness.
+    // "+0%" hotkey while unlinked: shows the indicator for the active
+    // display without changing brightness.
     PostMessage(g_hwndMain, WM_HOTKEY, 1, 0);
     Sleep(500);
+    RECT r;
     GetWindowRect(g_hwndOsd, &r);
     wprintf(L"osd visible=%d size=%dx%d\n", IsWindowVisible(g_hwndOsd),
             (int)(r.right - r.left), (int)(r.bottom - r.top));

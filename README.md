@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshot-panel.png" alt="Brightness panel, dark theme" width="450">
+  <img src="assets/screenshot-panel.png" alt="Brightness panel, dark theme" width="360">
   &nbsp;
-  <img src="assets/screenshot-panel-light.png" alt="Brightness panel, light theme" width="450">
+  <img src="assets/screenshot-panel-light.png" alt="Brightness panel, light theme" width="360">
 </p>
 
 Windows can change the backlight of most external monitors, but it doesn't
@@ -21,8 +21,9 @@ and doesn't inject code into Explorer.
 
 | | |
 |---|---|
-| **Tray panel** | Click the sun icon to get a slider for each display, plus an optional *All displays* slider that moves every display together while keeping their differences. Drag, scroll or use the arrow keys. |
-| **Hotkeys** | Bind any key combination to increase, decrease or set brightness for one or all displays, turn the displays off, or open the panel. |
+| **Tray panel** | Click the sun icon to get a slider for each display. Drag, scroll or use the arrow keys. |
+| **Link displays** | The chain button links the displays: one slider sets all of them to the same level, and the hotkeys and the mouse wheel change all of them. Unlinked, the hotkeys change the display with the active window and the wheel changes the display under the cursor. |
+| **Hotkeys** | Bind any key combination to increase, decrease or set brightness, turn the displays off, or open the panel. A hotkey can also target a specific display. |
 | **On-screen indicator** | Shows the new level when you use a hotkey or the mouse wheel, with one row per display when they are at different levels. |
 | **Mouse wheel** | Scroll over the tray icon, or anywhere on the taskbar, to change brightness. You can require a modifier key. |
 | **Schedule** | Change brightness at set times of day with a smooth transition. |
@@ -79,6 +80,17 @@ and doesn't inject code into Explorer.
     dimming.
   - **Copy display info**: copies the name, ID and control method of each
     display, which you can use in the settings.
+- Click the **chain** button in the panel to link or unlink the displays. It's
+  on (highlighted) by default, and the mod remembers your choice.
+
+  <img src="assets/screenshot-panel-linked.png" alt="Panel with the displays linked: one slider for all displays" width="360">
+
+  | | Panel | Hotkeys | Mouse wheel |
+  |---|---|---|---|
+  | **Linked** | One slider, all displays at the same level | All displays | All displays |
+  | **Unlinked** | One slider per display | The display with the active window | The display under the cursor |
+
+  A hotkey whose *Display* setting is filled in always changes that display.
 - In the panel, you can drag a slider, scroll over it, or use `↑`/`↓` to choose
   a display and `←`/`→`, `PgUp`/`PgDn`, `Home`/`End` to change its level.
 
@@ -89,11 +101,9 @@ Open the mod in Windhawk and go to the **Settings** tab.
 | Setting | Description |
 |---|---|
 | Panel theme | Follow Windows, or always dark/light. |
-| Show an "All displays" slider | Shown when two or more displays can be controlled. |
-| Behavior of the "All displays" slider | *Relative* (default) moves every display by the same amount and keeps their differences. Dragging to an edge and back restores them. *Absolute* sets every display to the same level. |
 | Show the on-screen indicator | Shown for hotkeys and the mouse wheel. |
-| Hotkeys | A list of key combinations with an action, an amount and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change all displays by 10%. |
-| Mouse wheel | Where scrolling changes brightness (off, tray icon, whole taskbar), the required modifier key, the step size, and whether it changes all displays or the display under the cursor. |
+| Hotkeys | A list of key combinations with an action, an amount and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change the brightness by 10% (all displays while linked). |
+| Mouse wheel | Where scrolling changes brightness (off, tray icon, whole taskbar), the required modifier key and the step size. |
 | Brightness schedule | A list of times (`HH:MM`, 24-hour) with a brightness level and an optional display. |
 | Schedule options | Transition length, and whether to apply the latest entry on startup and after sleep. |
 | Idle dimming | Idle time, dimmed level, and whether to skip dimming while a full-screen app runs. |
