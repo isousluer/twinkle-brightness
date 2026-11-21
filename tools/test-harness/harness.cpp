@@ -183,7 +183,7 @@ int wmain(int argc, wchar_t** argv) {
     if (!g_displays.empty()) {
         wprintf(L"osd saved=%d\n", SaveOsdPng({{g_displays[0].label, g_displays[0].value}}, dpi, out + L"-osd.png"));
     }
-    wprintf(L"osd-multi saved=%d\n", SaveOsdPng({{L"DELL U2720Q", 35}, {L"LG HDR 4K", 70}}, dpi, out + L"-osd-multi.png"));
+    wprintf(L"osd-multi saved=%d\n", SaveOsdPng({{L"LG HDR 4K", 33}, {L"Built-in display", 40}}, dpi, out + L"-osd-multi.png"));
 
     WhTool_ModUninit();
     wprintf(L"logic test failures: %d\nexit ok\n", g_failures);

@@ -20,6 +20,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - The on-screen indicator shows one row per display (name, bar and level) when
   a hotkey changes displays that are at different levels. Previously it showed
   only the first display's level.
+- The on-screen indicator shows display names in bold, like the panel.
 - The schedule and idle dimming no longer poll. The schedule sets a timer for
   the next entry and also reacts to clock changes. Idle dimming checks for
   input every second only while the displays are dimmed.

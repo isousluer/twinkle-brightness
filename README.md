@@ -36,7 +36,7 @@ and doesn't inject code into Explorer.
   &nbsp;
   <img src="assets/screenshot-osd-light.png" alt="On-screen indicator, light theme" width="382">
   <br>
-  <img src="assets/screenshot-osd-multi.png" alt="On-screen indicator with two displays at different levels" width="457">
+  <img src="assets/screenshot-osd-multi.png" alt="On-screen indicator with two displays at different levels" width="495">
 </p>
 
 ## Requirements
