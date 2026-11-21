@@ -21,9 +21,9 @@ and doesn't inject code into Explorer.
 
 | | |
 |---|---|
-| **Tray panel** | Click the sun icon to get a slider for each display, plus an optional *All displays* slider. Drag, scroll or use the arrow keys. |
+| **Tray panel** | Click the sun icon to get a slider for each display, plus an optional *All displays* slider that moves every display together while keeping their differences. Drag, scroll or use the arrow keys. |
 | **Hotkeys** | Bind any key combination to increase, decrease or set brightness for one or all displays, turn the displays off, or open the panel. |
-| **On-screen indicator** | Shows the new level when you use a hotkey or the mouse wheel. |
+| **On-screen indicator** | Shows the new level when you use a hotkey or the mouse wheel, with one row per display when they are at different levels. |
 | **Mouse wheel** | Scroll over the tray icon, or anywhere on the taskbar, to change brightness. You can require a modifier key. |
 | **Schedule** | Change brightness at set times of day with a smooth transition. |
 | **Idle dimming** | Dim the displays after a period of inactivity and restore them on the next input. Can skip full-screen apps. |
@@ -34,6 +34,8 @@ and doesn't inject code into Explorer.
   <img src="assets/screenshot-osd.png" alt="On-screen indicator, dark theme" width="382">
   &nbsp;
   <img src="assets/screenshot-osd-light.png" alt="On-screen indicator, light theme" width="382">
+  <br>
+  <img src="assets/screenshot-osd-multi.png" alt="On-screen indicator with two displays at different levels" width="457">
 </p>
 
 ## Requirements
@@ -88,6 +90,7 @@ Open the mod in Windhawk and go to the **Settings** tab.
 |---|---|
 | Panel theme | Follow Windows, or always dark/light. |
 | Show an "All displays" slider | Shown when two or more displays can be controlled. |
+| "All displays" slider behavior | *Relative* (default) moves every display by the same amount and keeps their differences. Dragging to an edge and back restores them. *Absolute* sets every display to the same level. |
 | Show the on-screen indicator | Shown for hotkeys and the mouse wheel. |
 | Hotkeys | A list of key combinations with an action, an amount and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change all displays by 10%. |
 | Mouse wheel | Where scrolling changes brightness (off, tray icon, whole taskbar), the required modifier key, the step size, and whether it changes all displays or the display under the cursor. |

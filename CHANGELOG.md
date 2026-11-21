@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-11-21
+
+### Added
+
+- "All displays" slider behavior setting. The new default, *relative*, moves
+  every display by the same amount and keeps their differences. *Absolute*
+  sets every display to the same level, as in 1.0.0.
+
+### Changed
+
+- The on-screen indicator shows one row per display (name, bar and level) when
+  a hotkey or the mouse wheel changes displays that are at different levels.
+  Previously it showed only the first display's level.
+
 ## [1.0.0] - 2026-11-21
 
 ### Added
@@ -26,4 +40,5 @@ and this project follows [Semantic Versioning](https://semver.org/).
   copy display info.
 - Automatic re-detection of displays after sleep and display changes.
 
+[1.1.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.1.0
 [1.0.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.0.0
