@@ -2,6 +2,10 @@
 #include MOD_SOURCE
 
 std::wstring g_theme = L"auto";
+std::map<std::wstring, std::wstring>& StubStorage() {
+    static std::map<std::wstring, std::wstring> m;
+    return m;
+}
 std::map<std::wstring, std::wstring>& StubSettings() {
     static std::map<std::wstring, std::wstring> m = {
         {L"theme", g_theme}, {L"showAllDisplaysSlider", L"1"}, {L"showOsd", L"1"},
@@ -111,6 +115,15 @@ void RunLogicTests() {
     g_displays[1].value = 80;
     auto items = BuildOsdItems(targets);
     Check(items.size() == 2 && items[0].value == 55 && items[1].value == 80, L"OSD: different levels -> one row each");
+
+    // Levels saved before an idle dim are restored at the next start.
+    g_idleRestore = {{L"a", 30}, {L"b", 70}};
+    SaveIdleRestore();
+    g_idleRestore.clear();
+    g_displays[0].value = g_displays[1].value = 10;
+    RestoreSavedIdleLevels();
+    Check(g_displays[0].value == 30 && g_displays[1].value == 70, L"interrupted idle dim restored 30/70");
+    Check(StubStorage().empty(), L"saved idle levels cleared");
 
     g_displays.clear();
     std::lock_guard<std::mutex> lock(hw::g_mutex);

@@ -17,6 +17,23 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - The on-screen indicator shows one row per display (name, bar and level) when
   a hotkey or the mouse wheel changes displays that are at different levels.
   Previously it showed only the first display's level.
+- The schedule and idle dimming no longer poll. The schedule sets a timer for
+  the next entry and also reacts to clock changes. Idle dimming checks for
+  input every second only while the displays are dimmed.
+- The mouse wheel hook runs on its own thread, so a busy panel or a slow
+  display can't delay mouse input.
+
+### Fixed
+
+- If the session ended while the displays were dimmed for inactivity, they
+  stayed dimmed. The previous levels are now restored at sign-out and
+  shutdown, and at the next start if the mod was stopped in another way.
+- After sleep, the latest schedule entry was applied even when "apply on
+  startup and after sleep" was off.
+- Scrolling over a tray icon flyout could change brightness when it
+  overlapped the icon's position.
+- A display that keeps failing no longer triggers a re-detection more than
+  once every 10 seconds.
 
 ## [1.0.0] - 2026-11-21
 

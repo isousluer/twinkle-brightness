@@ -90,7 +90,7 @@ Open the mod in Windhawk and go to the **Settings** tab.
 |---|---|
 | Panel theme | Follow Windows, or always dark/light. |
 | Show an "All displays" slider | Shown when two or more displays can be controlled. |
-| "All displays" slider behavior | *Relative* (default) moves every display by the same amount and keeps their differences. Dragging to an edge and back restores them. *Absolute* sets every display to the same level. |
+| Behavior of the "All displays" slider | *Relative* (default) moves every display by the same amount and keeps their differences. Dragging to an edge and back restores them. *Absolute* sets every display to the same level. |
 | Show the on-screen indicator | Shown for hotkeys and the mouse wheel. |
 | Hotkeys | A list of key combinations with an action, an amount and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change all displays by 10%. |
 | Mouse wheel | Where scrolling changes brightness (off, tray icon, whole taskbar), the required modifier key, the step size, and whether it changes all displays or the display under the cursor. |
@@ -164,6 +164,12 @@ sleep and display changes.
 Another program probably uses the same combination. Open the mod's log in
 Windhawk and look for `RegisterHotKey failed`, then pick a different
 combination.
+
+The default `Ctrl+Alt+Up` / `Ctrl+Alt+Down` are also used by some other
+software, for example to add cursors in Visual Studio Code, or to rotate the
+screen with older Intel graphics drivers. While the mod runs, its hotkeys take
+precedence. If you need those shortcuts, change or remove the mod's hotkeys in
+the settings.
 
 </details>
 
