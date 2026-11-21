@@ -22,10 +22,9 @@ and doesn't inject code into Explorer.
 | | |
 |---|---|
 | **Tray panel** | Click the sun icon to get a slider for each display. Drag, scroll or use the arrow keys. |
-| **Link displays** | The chain button links the displays: one slider sets all of them to the same level, and the hotkeys and the mouse wheel change all of them. Unlinked, the hotkeys change the display with the active window and the wheel changes the display under the cursor. |
+| **Link displays** | The chain button links the displays: one slider sets all of them to the same level, and the hotkeys change all of them. Unlinked, the hotkeys change the display with the active window. |
 | **Hotkeys** | Bind any key combination to increase, decrease or set brightness, turn the displays off, or open the panel. A hotkey can also target a specific display. |
-| **On-screen indicator** | Shows the new level when you use a hotkey or the mouse wheel, with one row per display when they are at different levels. |
-| **Mouse wheel** | Scroll over the tray icon, or anywhere on the taskbar, to change brightness. You can require a modifier key. |
+| **On-screen indicator** | Shows the new level when you use a hotkey, with one row per display when they are at different levels. |
 | **Schedule** | Change brightness at set times of day with a smooth transition. |
 | **Idle dimming** | Dim the displays after a period of inactivity and restore them on the next input. Can skip full-screen apps. |
 | **Normalization** | Per-display minimum and maximum, so different monitors look equally bright at the same slider position. |
@@ -85,12 +84,15 @@ and doesn't inject code into Explorer.
 
   <img src="assets/screenshot-panel-linked.png" alt="Panel with the displays linked: one slider for all displays" width="360">
 
-  | | Panel | Hotkeys | Mouse wheel |
-  |---|---|---|---|
-  | **Linked** | One slider, all displays at the same level | All displays | All displays |
-  | **Unlinked** | One slider per display | The display with the active window | The display under the cursor |
+  | | Panel | Hotkeys |
+  |---|---|---|
+  | **Linked** | One slider, all displays at the same level | All displays |
+  | **Unlinked** | One slider per display | The display with the active window |
 
-  A hotkey whose *Display* setting is filled in always changes that display.
+  Linked displays are always set to the same level, so the first change
+  brings them together. If your displays look different at the same level,
+  use the per-display minimum and maximum to match them. A hotkey whose
+  *Display* setting is filled in always changes that display.
 - In the panel, you can drag a slider, scroll over it, or use `↑`/`↓` to choose
   a display and `←`/`→`, `PgUp`/`PgDn`, `Home`/`End` to change its level.
 
@@ -101,9 +103,8 @@ Open the mod in Windhawk and go to the **Settings** tab.
 | Setting | Description |
 |---|---|
 | Panel theme | Follow Windows, or always dark/light. |
-| Show the on-screen indicator | Shown for hotkeys and the mouse wheel. |
+| Show the on-screen indicator | Shown when a hotkey changes the brightness. |
 | Hotkeys | A list of key combinations with an action, an amount and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change the brightness by 10% (all displays while linked). |
-| Mouse wheel | Where scrolling changes brightness (off, tray icon, whole taskbar), the required modifier key and the step size. |
 | Brightness schedule | A list of times (`HH:MM`, 24-hour) with a brightness level and an optional display. |
 | Schedule options | Transition length, and whether to apply the latest entry on startup and after sleep. |
 | Idle dimming | Idle time, dimmed level, and whether to skip dimming while a full-screen app runs. |
@@ -143,8 +144,8 @@ Supported keys: `A`-`Z`, `0`-`9`, `F1`-`F24`, `Up`, `Down`, `Left`, `Right`,
   up a backlog of commands.
 - The mod runs as a Windhawk
   [tool mod](https://github.com/ramensoftware/windhawk/wiki/Mods-as-tools:-Running-mods-in-a-dedicated-process)
-  in its own `windhawk.exe` process. The mouse wheel feature uses a low-level
-  mouse hook, so it doesn't inject anything into Explorer.
+  in its own `windhawk.exe` process, so it doesn't inject anything into
+  Explorer.
 
 ## Troubleshooting
 

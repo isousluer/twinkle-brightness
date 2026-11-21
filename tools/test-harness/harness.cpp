@@ -9,7 +9,6 @@ std::map<std::wstring, std::wstring>& StubStorage() {
 std::map<std::wstring, std::wstring>& StubSettings() {
     static std::map<std::wstring, std::wstring> m = {
         {L"theme", g_theme}, {L"showAllDisplaysSlider", L"1"}, {L"showOsd", L"1"},
-        {L"wheel.mode", L"off"}, {L"wheel.step", L"2"}, {L"wheel.target", L"all"},
         {L"hotkeys[0].keys", L"Ctrl+Alt+F23"}, {L"hotkeys[0].action", L"increase"},
         {L"hotkeys[0].value", L"0"},
         {L"scheduleOptions.transitionSeconds", L"30"}, {L"scheduleOptions.applyOnStartup", L"1"},
@@ -88,7 +87,7 @@ void RunLogicTests() {
     };
     g_displays = {fake(L"a", L"Left", 30), fake(L"b", L"Right", 70)};
 
-    // Linked: the shared slider, hotkeys and the wheel set all displays to
+    // Linked: the shared slider and hotkeys set all displays to
     // the same level, starting from their average.
     g_linked = true;
     PanelRow all{};

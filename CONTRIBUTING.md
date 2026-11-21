@@ -31,7 +31,7 @@ The source file is organized in sections:
    It runs on its own thread, so slow hardware calls never block the UI.
 3. **UI state**: the display list as the UI sees it, fades and normalization.
 4. **Tray icon, panel and on-screen indicator**: Win32 + GDI+ drawing.
-5. **Hotkeys, mouse wheel, schedule and idle dimming**.
+5. **Hotkeys, schedule and idle dimming**.
 6. **Tool mod boilerplate**: the standard Windhawk code that runs the mod in a
    dedicated process. Leave this section unchanged.
 

@@ -48,7 +48,7 @@ updates a single file in the `mods/` folder.
    - Explain how it differs from existing mods. For example,
      `per-monitor-brightness` adds sliders to Windows 11 Quick Settings, while
      this mod is a standalone tray panel that works on Windows 10 and 11 and
-     adds hotkeys, a schedule, idle dimming and mouse wheel control.
+     adds hotkeys, a schedule and idle dimming.
    - Attach a screenshot.
 4. Review happens in two stages, which you drive with comments on the pull
    request

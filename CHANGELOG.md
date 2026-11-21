@@ -10,9 +10,8 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 - **Link displays** button in the panel, like Twinkle Tray's. While linked
   (the default), one slider sets all displays to the same level, and the
-  hotkeys and the mouse wheel change all of them. While unlinked, each display
-  has its own slider, the hotkeys change the display with the active window,
-  and the mouse wheel changes the display under the cursor. The choice is
+  hotkeys change all of them. While unlinked, each display has its own slider
+  and the hotkeys change the display with the active window. The choice is
   remembered.
 
 ### Changed
@@ -24,8 +23,6 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - The schedule and idle dimming no longer poll. The schedule sets a timer for
   the next entry and also reacts to clock changes. Idle dimming checks for
   input every second only while the displays are dimmed.
-- The mouse wheel hook runs on its own thread, so a busy panel or a slow
-  display can't delay mouse input.
 
 ### Fixed
 
@@ -34,15 +31,15 @@ and this project follows [Semantic Versioning](https://semver.org/).
   shutdown, and at the next start if the mod was stopped in another way.
 - After sleep, the latest schedule entry was applied even when "apply on
   startup and after sleep" was off.
-- Scrolling over a tray icon flyout could change brightness when it
-  overlapped the icon's position.
 - A display that keeps failing no longer triggers a re-detection more than
   once every 10 seconds.
 
 ### Removed
 
-- The "Show an All displays slider" and mouse wheel "Displays to change"
-  settings. The link button replaces both.
+- Mouse wheel control over the tray icon or the taskbar. It always reached the
+  display with the taskbar, and removing it also removes the system-wide
+  mouse hook. Scrolling over the panel's sliders still works.
+- The "Show an All displays slider" setting. The link button replaces it.
 
 ## [1.0.0] - 2026-11-21
 
