@@ -95,7 +95,7 @@ link button).
   **Refresh displays** in the tray menu.
 - **A monitor stops responding after sleep:** choose **Refresh displays**, or
   turn the monitor off and on with its power button. Monitors that don't
-  answer at first are detected again automatically after 3 and 10 seconds.
+  answer at first are detected again automatically after 3, 10 and 30 seconds.
 - **A hotkey does nothing:** another program may already use that combination.
   Check the Windhawk log for "RegisterHotKey failed". The default
   `Ctrl+Alt+Up`/`Ctrl+Alt+Down` are also used by Visual Studio Code (add a
@@ -715,8 +715,9 @@ struct DisplayInfo {
     bool internal = false;
     Method method = Method::None;
     int raw = -1;  // Hardware brightness 0-100, -1 if unknown
-    // DDC/CI could be tried but the monitor didn't answer. Some monitors miss
-    // requests after a while without traffic, so the UI detects again later.
+    // An external display that couldn't be controlled. Some monitors miss
+    // requests after a while without traffic, and right after startup Windows
+    // may not have a DDC/CI handle for them yet, so the UI detects again later.
     bool ddcFailed = false;
 };
 
@@ -1085,8 +1086,13 @@ void Enumerate() {
             physical.resize(physicalCount);
             if (!GetPhysicalMonitorsFromHMONITOR(monitor, physicalCount,
                                                  physical.data())) {
+                Wh_Log(L"No DDC/CI handles for %s (error 0x%08X)", mi.szDevice,
+                       GetLastError());
                 physical.clear();
             }
+        } else {
+            Wh_Log(L"No physical monitors for %s (error 0x%08X)", mi.szDevice,
+                   GetLastError());
         }
 
         size_t count = std::max<size_t>(
@@ -1160,7 +1166,7 @@ void Enumerate() {
                         (int)std::lround(current * 100.0 / maximum));
                 } else if (wmiIndex >= 0) {
                     useWmi();
-                } else if (d.physical && !d.info.internal) {
+                } else if (!d.info.internal) {
                     d.info.ddcFailed = true;
                 }
             }
@@ -1582,18 +1588,22 @@ void RefreshDisplays() {
     hw::RequestEnumerate();
 }
 
-// After an enumeration: if a monitor has DDC/CI but didn't answer, try again
-// after 3 and 10 seconds. Monitors without DDC/CI are left alone after that.
+// After an enumeration: if an external monitor couldn't be controlled, try
+// again after 3, 10 and 30 seconds. Monitors without DDC/CI are left alone
+// after that.
 void ScheduleAutoReenumerate() {
     bool failed = std::any_of(g_lastSnapshot.begin(), g_lastSnapshot.end(),
                               [](const DisplayInfo& info) {
                                   return info.method == Method::None &&
                                          info.ddcFailed;
                               });
-    if (!failed || g_autoReenumCount >= 2) {
+    static const UINT delays[] = {3000, 10000, 30000};
+    if (!failed || g_autoReenumCount >= (int)ARRAYSIZE(delays)) {
         return;
     }
-    UINT delay = g_autoReenumCount == 0 ? 3000 : 10000;
+    UINT delay = delays[g_autoReenumCount];
+    Wh_Log(L"A display couldn't be controlled, detecting again in %u ms",
+           delay);
     g_autoReenumCount++;
     SetTimer(g_hwndMain, TIMER_AUTO_REENUM, delay, nullptr);
 }

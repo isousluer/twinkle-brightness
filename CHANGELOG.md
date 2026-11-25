@@ -26,7 +26,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Some monitors (for example ViewSonic VX2476) showed "Brightness control is
   not available" until the displays were refreshed by hand. DDC/CI reads are
   now retried with longer waits, and a monitor that doesn't answer is
-  detected again after 3 and 10 seconds. (#13)
+  detected again after 3, 10 and 30 seconds. (#13)
 - Scrolling with a touchpad in the panel changed the brightness much too
   fast. It now steps once per mouse wheel notch. (#12)
 

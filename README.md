@@ -171,7 +171,7 @@ Supported keys: `A`-`Z`, `0`-`9`, `F1`-`F24`, `Up`, `Down`, `Left`, `Right`,
 - Then choose **Refresh displays** from the tray menu.
 
 Some monitors don't answer the first DDC/CI requests after a while without
-traffic. The mod retries, and detects such a monitor again after 3 and 10
+traffic. The mod retries, and detects such a monitor again after 3, 10 and 30
 seconds, so the message may go away on its own.
 
 </details>
