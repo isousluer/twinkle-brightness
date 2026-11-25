@@ -103,7 +103,7 @@ Use this to try a version that isn't in Windhawk yet.
   *Display* setting is filled in always changes that display.
 - In the panel, you can drag a slider, scroll over it, or use `↑`/`↓` to choose
   a display and `←`/`→`, `PgUp`/`PgDn`, `Home`/`End` to change its level.
-- To set an exact level, double-click a display's level or slider (or press
+- To set an exact level, double-click a display's level (or press
   `F2` or `Enter`), type a number and press `Enter`. `Esc` cancels.
 
 ## Settings
@@ -171,8 +171,8 @@ Supported keys: `A`-`Z`, `0`-`9`, `F1`-`F24`, `Up`, `Down`, `Left`, `Right`,
 - Then choose **Refresh displays** from the tray menu.
 
 Some monitors don't answer the first DDC/CI requests after a while without
-traffic. The mod retries, and detects such a monitor again after 3, 10 and 30
-seconds, so the message may go away on its own.
+traffic. The mod retries, and detects such a monitor again up to three times in
+the first minute, so the message may go away on its own.
 
 </details>
 

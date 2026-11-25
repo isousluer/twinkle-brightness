@@ -8,7 +8,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Type an exact level: double-click a display's level or slider in the panel,
+- Type an exact level: double-click a display's level in the panel,
   or press F2 or Enter on the focused row. Enter applies, Esc cancels. (#10)
 - The tray icon shows the brightness level: the sun's rays light up like a
   gauge. It can be turned off in the settings. (#9)
@@ -26,7 +26,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Some monitors (for example ViewSonic VX2476) showed "Brightness control is
   not available" until the displays were refreshed by hand. DDC/CI reads are
   now retried with longer waits, and a monitor that doesn't answer is
-  detected again after 3, 10 and 30 seconds. (#13)
+  detected again up to three times in the first minute. (#13)
 - Scrolling with a touchpad in the panel changed the brightness much too
   fast. It now steps once per mouse wheel notch. (#12)
 
