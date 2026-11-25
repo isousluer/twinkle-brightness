@@ -21,14 +21,17 @@ and doesn't inject code into Explorer.
 
 | | |
 |---|---|
-| **Tray panel** | Click the sun icon to get a slider for each display. Drag, scroll or use the arrow keys. |
+| **Tray panel** | Click the sun icon to get a slider for each display. Drag, scroll, use the arrow keys, or double-click a level to type it. |
+| **Tray gauge** | The sun's rays in the tray icon light up with the brightness level. |
 | **Link displays** | The chain button links the displays: one slider sets all of them to the same level, and the hotkeys change all of them. Unlinked, the hotkeys change the display with the active window. |
 | **Hotkeys** | Bind any key combination to increase, decrease or set brightness, turn the displays off, or open the panel. A hotkey can also target a specific display. |
-| **On-screen indicator** | Shows the new level when you use a hotkey, with one row per display when they are at different levels. |
+| **On-screen indicator** | Shows the new level when you use a hotkey, with one row per display when they are at different levels. Bottom or top of the screen, centered or in a corner. |
+| **Changes from elsewhere** | Levels changed with a laptop's brightness keys or the Windows slider show up right away. Monitors are read again before a hotkey step. |
 | **Schedule** | Change brightness at set times of day with a smooth transition. |
 | **Idle dimming** | Dim the displays after a period of inactivity and restore them on the next input. Can skip full-screen apps. |
 | **Normalization** | Per-display minimum and maximum, so different monitors look equally bright at the same slider position. |
 | **Theme aware** | Follows the Windows light/dark mode and accent color, with rounded corners on Windows 11. |
+| **Languages** | English and Turkish, following the Windows display language. |
 
 <p align="center">
   <img src="assets/screenshot-osd.png" alt="On-screen indicator, dark theme" width="382">
@@ -100,6 +103,8 @@ Use this to try a version that isn't in Windhawk yet.
   *Display* setting is filled in always changes that display.
 - In the panel, you can drag a slider, scroll over it, or use `↑`/`↓` to choose
   a display and `←`/`→`, `PgUp`/`PgDn`, `Home`/`End` to change its level.
+- To set an exact level, double-click a display's level or slider (or press
+  `F2` or `Enter`), type a number and press `Enter`. `Esc` cancels.
 
 ## Settings
 
@@ -109,6 +114,8 @@ Open the mod in Windhawk and go to the **Settings** tab.
 |---|---|
 | Panel theme | Follow Windows, or always dark/light. |
 | Show the on-screen indicator | Shown when a hotkey changes the brightness. |
+| Position of the on-screen indicator | Bottom center (default), top center, or one of the corners. |
+| Show the brightness level in the tray icon | The sun's rays light up like a gauge. On by default. |
 | Hotkeys | A list of key combinations with an action, an amount and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change the brightness by 10% (all displays while linked). |
 | Brightness schedule | A list of times (`HH:MM`, 24-hour) with a brightness level and an optional display. |
 | Schedule options | Transition length, and whether to apply the latest entry on startup and after sleep. |
@@ -162,6 +169,10 @@ Supported keys: `A`-`Z`, `0`-`9`, `F1`-`F24`, `Up`, `Down`, `Left`, `Right`,
 - Use a direct HDMI, DisplayPort or USB-C cable. Docks, adapters, KVM switches,
   VGA and DVI often don't pass DDC/CI through.
 - Then choose **Refresh displays** from the tray menu.
+
+Some monitors don't answer the first DDC/CI requests after a while without
+traffic. The mod retries, and detects such a monitor again after 3 and 10
+seconds, so the message may go away on its own.
 
 </details>
 

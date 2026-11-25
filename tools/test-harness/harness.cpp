@@ -119,6 +119,13 @@ void RunLogicTests() {
     auto items = BuildOsdItems(targets);
     Check(items.size() == 2 && items[0].value == 55 && items[1].value == 80, L"OSD: different levels -> one row each");
 
+    // Tray gauge: the average (67.5%) lights 6 of the 8 rays, rounded up.
+    g_settings.trayIconLevel = true;
+    Check(TrayLitRays() == 6, L"tray gauge: 55/80 -> 6 rays");
+    g_settings.trayIconLevel = false;
+    Check(TrayLitRays() == 8, L"tray gauge off -> all rays");
+    g_settings.trayIconLevel = true;
+
     // Levels saved before an idle dim are restored at the next start.
     g_idleRestore = {{L"a", 30}, {L"b", 70}};
     SaveIdleRestore();

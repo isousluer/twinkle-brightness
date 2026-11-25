@@ -4,6 +4,32 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-11-25
+
+### Added
+
+- Type an exact level: double-click a display's level or slider in the panel,
+  or press F2 or Enter on the focused row. Enter applies, Esc cancels. (#10)
+- The tray icon shows the brightness level: the sun's rays light up like a
+  gauge. It can be turned off in the settings. (#9)
+- Setting for the position of the on-screen indicator: the bottom or the top
+  of the screen, in the center or a corner. (#11)
+- Tooltips for the buttons at the bottom of the panel. (#2)
+- Turkish translation of the panel, the menus and the settings. The mod
+  follows the Windows display language. (#3)
+- Brightness changes made outside the mod are picked up. Laptop screens
+  report them right away. Monitors are read again before a hotkey step if
+  their levels are more than a few seconds old. (#5)
+
+### Fixed
+
+- Some monitors (for example ViewSonic VX2476) showed "Brightness control is
+  not available" until the displays were refreshed by hand. DDC/CI reads are
+  now retried with longer waits, and a monitor that doesn't answer is
+  detected again after 3 and 10 seconds. (#13)
+- Scrolling with a touchpad in the panel changed the brightness much too
+  fast. It now steps once per mouse wheel notch. (#12)
+
 ## [1.1.0] - 2026-11-25
 
 ### Added
@@ -63,5 +89,6 @@ and this project follows [Semantic Versioning](https://semver.org/).
   copy display info.
 - Automatic re-detection of displays after sleep and display changes.
 
+[1.2.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.2.0
 [1.1.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.1.0
 [1.0.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.0.0

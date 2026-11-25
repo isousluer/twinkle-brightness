@@ -65,7 +65,7 @@ updates a single file in the `mods/` folder.
 
 For later updates, repeat the steps above with the new version: copy the file
 over the existing one and open a new pull request titled
-`Twinkle Brightness v1.1.0`.
+`Twinkle Brightness v1.2.0`.
 
 ### Checklist from the Windhawk mod guidelines
 
