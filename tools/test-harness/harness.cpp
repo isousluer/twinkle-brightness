@@ -119,6 +119,16 @@ void RunLogicTests() {
     auto items = BuildOsdItems(targets);
     Check(items.size() == 2 && items[0].value == 55 && items[1].value == 80, L"OSD: different levels -> one row each");
 
+    // On Turkish Windows, settings written with the English default names
+    // keep matching, numbered ones too.
+    g_strings = kStringsTr;
+    DisplayInfo numbered;
+    numbered.name = L"Ekran (2)";
+    Check(NameMatches(numbered, L"Display (2)") && !NameMatches(numbered, L"Display (1)"), L"English default name: numbered");
+    numbered.name = L"Ekranlar";
+    Check(EnglishDefaultName(numbered).empty(), L"English default name: own names untouched");
+    g_strings = kStringsEn;
+
     // Tray gauge: the average (67.5%) lights 6 of the 8 rays, rounded up.
     g_settings.trayIconLevel = true;
     Check(TrayLitRays() == 6, L"tray gauge: 55/80 -> 6 rays");
