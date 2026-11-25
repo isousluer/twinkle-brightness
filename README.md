@@ -54,11 +54,16 @@ and doesn't inject code into Explorer.
 2. Search for **Twinkle Brightness**.
 3. Click **Install**.
 
-> This works once the mod has been accepted into the
-> [official Windhawk mods repository](https://github.com/ramensoftware/windhawk-mods).
-> Until then, use the manual installation below.
+The mod is in the
+[official Windhawk mods repository](https://github.com/ramensoftware/windhawk-mods/blob/main/mods/twinkle-brightness.wh.cpp),
+so Windhawk installs updates automatically.
+
+> If you installed the mod manually before, remove that copy first (it's listed
+> as a local mod). Otherwise two tray icons run and their hotkeys conflict.
 
 ### Manual installation
+
+Use this to try a version that isn't in Windhawk yet.
 
 1. Open Windhawk and click **Create a new mod** on the home page.
 2. Replace all of the editor's contents with
