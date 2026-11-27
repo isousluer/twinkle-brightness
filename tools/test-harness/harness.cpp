@@ -167,6 +167,43 @@ void RunLogicTests() {
     ChangeDisplays(targets, 0, CycleTarget(cycle, targets), true);
     Check(g_displays[0].value == 100 && g_displays[1].value == 100, L"cycle: 50 -> 100/100");
 
+    // Turning a single monitor off and on again; laptop screens can't.
+    g_displays.push_back(fake(L"c", L"Laptop", 40));
+    g_displays[2].info.method = Method::Wmi;
+    Check(ToggleDisplaysPower({&g_displays[0]}) && g_displaysOff == std::set<std::wstring>{L"a"}, L"power: one monitor off");
+    Check(ToggleDisplaysPower({&g_displays[0], &g_displays[1]}) && g_displaysOff.size() == 2, L"power: partly off -> all off");
+    Check(ToggleDisplaysPower({&g_displays[0], &g_displays[1]}) && g_displaysOff.empty(), L"power: all off -> on again");
+    Check(!ToggleDisplaysPower({&g_displays[2]}) && g_displaysOff.empty(), L"power: laptop screen not turned off");
+    {
+        std::lock_guard<std::mutex> lock(hw::g_mutex);
+        Check(hw::g_pendingPower.size() == 2 && hw::g_pendingPower[L"a"] && hw::g_pendingPower[L"b"], L"power: latest requests are 'on'");
+        hw::g_pendingPower.clear();
+    }
+    g_displays.pop_back();
+
+    // Tray wheel: linked from the average, unlinked each from its own level.
+    g_settings.trayScrollStep = 5;
+    g_lastHwReadTick = GetTickCount();
+    g_displays[0].value = 20; g_displays[1].value = 40;
+    StepFromTrayWheel(2);
+    Check(g_displays[0].value == 40 && g_displays[1].value == 40, L"tray wheel linked: avg 30 + 2*5 -> 40/40");
+    g_linked = false;
+    g_displays[0].value = 20;
+    StepFromTrayWheel(-1);
+    Check(g_displays[0].value == 15 && g_displays[1].value == 35, L"tray wheel unlinked: each -5");
+    g_linked = true;
+    // Stale monitor levels: the steps wait for a read, then run.
+    g_lastHwReadTick = GetTickCount() - 10000;
+    StepFromTrayWheel(1);
+    StepFromTrayWheel(1);
+    Check(g_deferredWheelSteps == 2 && g_displays[0].value == 15, L"tray wheel waits for fresh levels");
+    RunDeferredHotkeys();
+    Check(g_deferredWheelSteps == 0 && g_displays[0].value == 35 && g_displays[1].value == 35, L"tray wheel deferred steps run: avg 25 + 10");
+    {
+        std::lock_guard<std::mutex> lock(hw::g_mutex);
+        hw::g_requestRefresh = false;
+    }
+
     g_displays.clear();
     std::lock_guard<std::mutex> lock(hw::g_mutex);
     hw::g_pendingSet.clear();

@@ -13,6 +13,12 @@ and this project follows [Semantic Versioning](https://semver.org/).
   It starts from the displays' current level, so it continues sensibly after
   the level was changed elsewhere. Combine it with the hotkey's display
   setting for one hotkey per monitor, for example on Stream Deck buttons. (#14)
+- Turn off a single monitor: from the new "Turn off a display" submenu of the
+  tray menu, or with a "Turn off displays" hotkey whose display setting is
+  filled in. Choosing it again turns the monitor on. It uses the DDC/CI power
+  mode, so it works for external monitors, not laptop screens. (#7)
+- Scroll the mouse wheel over the tray icon to change the brightness, 2% per
+  notch by default. The step can be changed or turned off in the settings.
 
 ### Fixed
 

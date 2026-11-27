@@ -23,8 +23,9 @@ and doesn't inject code into Explorer.
 |---|---|
 | **Tray panel** | Click the sun icon to get a slider for each display. Drag, scroll, use the arrow keys, or double-click a level to type it. |
 | **Tray gauge** | The sun's rays in the tray icon light up with the brightness level. |
+| **Scroll over the tray icon** | Turn the mouse wheel over the sun icon to change the brightness without opening the panel. |
 | **Link displays** | The chain button links the displays: one slider sets all of them to the same level, and the hotkeys change all of them. Unlinked, the hotkeys change the display with the active window. |
-| **Hotkeys** | Bind any key combination to increase, decrease or set brightness, cycle through a list of levels, turn the displays off, or open the panel. A hotkey can also target a specific display. |
+| **Hotkeys** | Bind any key combination to increase, decrease or set brightness, cycle through a list of levels, turn the displays off, or open the panel. A hotkey can also target a specific display, for example to turn only that monitor off and on again. |
 | **On-screen indicator** | Shows the new level when you use a hotkey, with one row per display when they are at different levels. Bottom or top of the screen, centered or in a corner. |
 | **Changes from elsewhere** | Levels changed with a laptop's brightness keys or the Windows slider show up right away. Monitors are read again before a hotkey step. |
 | **Schedule** | Change brightness at set times of day with a smooth transition. |
@@ -83,6 +84,8 @@ Use this to try a version that isn't in Windhawk yet.
   - **Refresh displays**: detect displays again, for example after reconnecting
     a cable.
   - **Turn off displays**
+  - **Turn off a display**: turns a single monitor off (DDC/CI only). A
+    checked monitor is off; choose it again to turn it on.
   - **Pause automatic brightness**: temporarily stops the schedule and idle
     dimming.
   - **Copy display info**: copies the name, ID and control method of each
@@ -116,7 +119,8 @@ Open the mod in Windhawk and go to the **Settings** tab.
 | Show the on-screen indicator | Shown when a hotkey changes the brightness. |
 | Position of the on-screen indicator | Bottom center (default), top center, or one of the corners. |
 | Show the brightness level in the tray icon | The sun's rays light up like a gauge. On by default. |
-| Hotkeys | A list of key combinations with an action, an amount, a list of levels and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change the brightness by 10% (all displays while linked). With **Cycle through levels**, each press goes to the next level of the list, for example `20, 50, 100`, and after the last one back to the first. |
+| Brightness step when scrolling over the tray icon | 2% per wheel notch by default. All displays change: from their average while linked, each from its own level while unlinked. 0 turns it off. |
+| Hotkeys | A list of key combinations with an action, an amount, a list of levels and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change the brightness by 10% (all displays while linked). With **Cycle through levels**, each press goes to the next level of the list, for example `20, 50, 100`, and after the last one back to the first. **Turn off displays** with a display filled in turns only that monitor off, and the next press turns it on again. |
 | Brightness schedule | A list of times (`HH:MM`, 24-hour) with a brightness level and an optional display. |
 | Schedule options | Transition length, and whether to apply the latest entry on startup and after sleep. |
 | Idle dimming | Idle time, dimmed level, and whether to skip dimming while a full-screen app runs. |
