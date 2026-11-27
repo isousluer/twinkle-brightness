@@ -145,6 +145,28 @@ void RunLogicTests() {
     Check(g_displays[0].value == 30 && g_displays[1].value == 70, L"interrupted idle dim restored 30/70");
     Check(StubStorage().empty(), L"saved idle levels cleared");
 
+    // Level lists for the cycle hotkey.
+    Check(ParseLevelList(L"20, 50, 100") == std::vector<int>{20, 50, 100}, L"level list: 20, 50, 100");
+    Check(ParseLevelList(L" 10%;x, ,150,-5 30 4a") == std::vector<int>{10, 100, 0, 30}, L"level list: blanks/invalid skipped, clamped");
+    Check(ParseLevelList(L"").empty() && ParseLevelList(L" , ;").empty(), L"level list: empty");
+
+    // The next level of a cycle.
+    std::vector<int> cycle = {20, 50, 100};
+    Check(NextCycleLevel(cycle, 20) == 50 && NextCycleLevel(cycle, 50) == 100, L"cycle: next entry");
+    Check(NextCycleLevel(cycle, 100) == 20, L"cycle: wraps after the last entry");
+    Check(NextCycleLevel(cycle, 35) == 50 && NextCycleLevel(cycle, 10) == 20, L"cycle: first entry above an unlisted level");
+    Check(NextCycleLevel(cycle, 90) == 100 && NextCycleLevel({20, 50}, 90) == 20, L"cycle: above all entries -> wraps");
+    Check(NextCycleLevel(cycle, -1) == 20, L"cycle: unknown level -> first entry");
+    Check(NextCycleLevel({100, 50, 20}, 100) == 50 && NextCycleLevel({100, 50, 20}, 20) == 100, L"cycle: descending list");
+    Check(NextCycleLevel({}, 50) == -1, L"cycle: empty list");
+
+    // A cycle starts from the targets' average and sets them all.
+    g_displays[0].value = 20; g_displays[1].value = 30;
+    ChangeDisplays(targets, 0, CycleTarget(cycle, targets), true);
+    Check(g_displays[0].value == 50 && g_displays[1].value == 50, L"cycle: from the average 25 -> 50/50");
+    ChangeDisplays(targets, 0, CycleTarget(cycle, targets), true);
+    Check(g_displays[0].value == 100 && g_displays[1].value == 100, L"cycle: 50 -> 100/100");
+
     g_displays.clear();
     std::lock_guard<std::mutex> lock(hw::g_mutex);
     hw::g_pendingSet.clear();

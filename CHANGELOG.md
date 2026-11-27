@@ -4,6 +4,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased] - 1.3.0
+
+### Added
+
+- "Cycle through levels" hotkey action: each press goes to the next level of
+  a list such as `20, 50, 100`, and after the last one back to the first.
+  It starts from the displays' current level, so it continues sensibly after
+  the level was changed elsewhere. Combine it with the hotkey's display
+  setting for one hotkey per monitor, for example on Stream Deck buttons. (#14)
+
+### Fixed
+
+- A hotkey step that waits for fresh monitor levels no longer runs early when
+  a monitor that didn't answer at startup is found, before the other
+  monitors were read again.
+
 ## [1.2.0] - 2026-11-25
 
 ### Added
@@ -89,6 +105,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
   copy display info.
 - Automatic re-detection of displays after sleep and display changes.
 
+[Unreleased]: https://github.com/isousluer/twinkle-brightness/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.2.0
 [1.1.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.1.0
 [1.0.0]: https://github.com/isousluer/twinkle-brightness/releases/tag/v1.0.0

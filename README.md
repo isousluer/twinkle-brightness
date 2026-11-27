@@ -24,7 +24,7 @@ and doesn't inject code into Explorer.
 | **Tray panel** | Click the sun icon to get a slider for each display. Drag, scroll, use the arrow keys, or double-click a level to type it. |
 | **Tray gauge** | The sun's rays in the tray icon light up with the brightness level. |
 | **Link displays** | The chain button links the displays: one slider sets all of them to the same level, and the hotkeys change all of them. Unlinked, the hotkeys change the display with the active window. |
-| **Hotkeys** | Bind any key combination to increase, decrease or set brightness, turn the displays off, or open the panel. A hotkey can also target a specific display. |
+| **Hotkeys** | Bind any key combination to increase, decrease or set brightness, cycle through a list of levels, turn the displays off, or open the panel. A hotkey can also target a specific display. |
 | **On-screen indicator** | Shows the new level when you use a hotkey, with one row per display when they are at different levels. Bottom or top of the screen, centered or in a corner. |
 | **Changes from elsewhere** | Levels changed with a laptop's brightness keys or the Windows slider show up right away. Monitors are read again before a hotkey step. |
 | **Schedule** | Change brightness at set times of day with a smooth transition. |
@@ -116,7 +116,7 @@ Open the mod in Windhawk and go to the **Settings** tab.
 | Show the on-screen indicator | Shown when a hotkey changes the brightness. |
 | Position of the on-screen indicator | Bottom center (default), top center, or one of the corners. |
 | Show the brightness level in the tray icon | The sun's rays light up like a gauge. On by default. |
-| Hotkeys | A list of key combinations with an action, an amount and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change the brightness by 10% (all displays while linked). |
+| Hotkeys | A list of key combinations with an action, an amount, a list of levels and an optional display. Default: `Ctrl+Alt+Up` / `Ctrl+Alt+Down` change the brightness by 10% (all displays while linked). With **Cycle through levels**, each press goes to the next level of the list, for example `20, 50, 100`, and after the last one back to the first. |
 | Brightness schedule | A list of times (`HH:MM`, 24-hour) with a brightness level and an optional display. |
 | Schedule options | Transition length, and whether to apply the latest entry on startup and after sleep. |
 | Idle dimming | Idle time, dimmed level, and whether to skip dimming while a full-screen app runs. |

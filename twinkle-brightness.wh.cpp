@@ -3,7 +3,7 @@
 // @name            Twinkle Brightness
 // @description     Brightness sliders for every display in the system tray, with hotkeys, an on-screen indicator, time-based schedules, and idle dimming
 // @description:tr-TR Sistem tepsisinde her ekran için parlaklık sürgüleri; kısayol tuşları, ekran göstergesi, zamanlama ve boşta karartma
-// @version         1.2.0
+// @version         1.3.0
 // @author          isousluer
 // @github          https://github.com/isousluer
 // @homepage        https://github.com/isousluer/twinkle-brightness
@@ -41,8 +41,8 @@ re-imagined as a lightweight Windhawk mod with no Electron runtime.
   display has its own slider and the hotkeys change the display with the
   active window.
 - **Hotkeys:** bind any key combination to increase, decrease or set the
-  brightness, turn the displays off, or open the panel. A hotkey can also
-  target a specific display.
+  brightness, cycle through a list of levels, turn the displays off, or open
+  the panel. A hotkey can also target a specific display.
 - **On-screen indicator:** a small overlay shows the new level when you use a
   hotkey, with one row per display when they are at different levels. It can
   be placed at the bottom or the top of the screen, in the center or a corner.
@@ -162,12 +162,14 @@ This mod is not affiliated with Twinkle Tray or its author.
       - increase: Increase brightness
       - decrease: Decrease brightness
       - set: Set brightness
+      - cycle: Cycle through levels
       - turnOff: Turn off displays
       - panel: Open the brightness panel
       $options:tr-TR:
       - increase: Parlaklığı artır
       - decrease: Parlaklığı azalt
       - set: Parlaklığı ayarla
+      - cycle: Seviyeler arasında geçiş yap
       - turnOff: Ekranları kapat
       - panel: Parlaklık panelini aç
     - value: 10
@@ -175,6 +177,11 @@ This mod is not affiliated with Twinkle Tray or its author.
       $name:tr-TR: Miktar (%)
       $description: Step for increase/decrease, or the level for "Set brightness"
       $description:tr-TR: Artırma/azaltma adımı ya da "Parlaklığı ayarla" için seviye
+    - levels: ""
+      $name: Levels (%)
+      $name:tr-TR: Seviyeler (%)
+      $description: 'For "Cycle through levels": comma-separated levels, for example 20, 50, 100. Each press goes to the next level, and after the last one back to the first.'
+      $description:tr-TR: '"Seviyeler arasında geçiş yap" için virgülle ayrılmış seviyeler, örneğin 20, 50, 100. Her basışta sonraki seviyeye geçer, sonuncudan sonra ilkine döner.'
     - display: ""
       $name: Display
       $name:tr-TR: Ekran
@@ -183,6 +190,7 @@ This mod is not affiliated with Twinkle Tray or its author.
   - - keys: Ctrl+Alt+Down
     - action: decrease
     - value: 10
+    - levels: ""
     - display: ""
   $name: Hotkeys
   $name:tr-TR: Kısayol tuşları
@@ -323,13 +331,14 @@ enum MenuId : UINT {
     MENU_COPY_INFO,
 };
 
-enum class HotkeyAction { Increase, Decrease, Set, TurnOff, Panel };
+enum class HotkeyAction { Increase, Decrease, Set, Cycle, TurnOff, Panel };
 enum class ThemeMode { Auto, Dark, Light };
 enum class SnapshotKind {
     WmiLevels,   // Laptop screens read again after a brightness event
     AllLevels,   // All displays read again
     Enumerated,  // Displays detected again
     Probed,      // Monitors that didn't answer were tried again, in vain
+    ProbeFound,  // A monitor that didn't answer answered now (not a full read)
 };
 
 enum class OsdPosition {
@@ -429,6 +438,7 @@ struct HotkeyConfig {
     UINT vk = 0;
     HotkeyAction action = HotkeyAction::Increase;
     int value = 10;
+    std::vector<int> levels;  // For Cycle
     std::wstring display;
     std::wstring text;
 };
@@ -606,6 +616,56 @@ bool ParseHotkey(const std::wstring& text, UINT* modifiers, UINT* vk) {
     return *vk != 0;
 }
 
+// A list of levels such as "20, 50, 100". Commas, semicolons and spaces
+// separate the entries, and a trailing "%" is allowed. Invalid entries are
+// skipped, and levels are clamped to 0-100.
+std::vector<int> ParseLevelList(const std::wstring& text) {
+    std::vector<int> levels;
+    size_t i = 0;
+    while (i < text.size()) {
+        size_t end = text.find_first_of(L",; \t", i);
+        if (end == std::wstring::npos) {
+            end = text.size();
+        }
+        std::wstring token = text.substr(i, end - i);
+        i = end + 1;
+        if (!token.empty() && token.back() == L'%') {
+            token.pop_back();
+        }
+        if (token.empty()) {
+            continue;
+        }
+        WCHAR* rest = nullptr;
+        long value = wcstol(token.c_str(), &rest, 10);
+        if (rest == token.c_str() || *rest != L'\0') {
+            continue;
+        }
+        levels.push_back((int)std::clamp(value, 0L, 100L));
+    }
+    return levels;
+}
+
+// The level that a cycle hotkey goes to from the current level (-1 when it
+// isn't known): the entry after the current level when it's in the list,
+// otherwise the first entry above it, wrapping to the first entry. Returns
+// -1 for an empty list.
+int NextCycleLevel(const std::vector<int>& levels, int current) {
+    if (levels.empty()) {
+        return -1;
+    }
+    for (size_t i = 0; i < levels.size(); i++) {
+        if (levels[i] == current) {
+            return levels[(i + 1) % levels.size()];
+        }
+    }
+    for (int level : levels) {
+        if (level > current) {
+            return level;
+        }
+    }
+    return levels[0];
+}
+
 int ParseTime(const std::wstring& text) {
     int h = -1, m = -1;
     if (swscanf_s(text.c_str(), L"%d:%d", &h, &m) != 2) {
@@ -649,10 +709,13 @@ void LoadSettings() {
             GetStringSetting(IndexedName(L"hotkeys", i, L"action"));
         hk.action = action == L"decrease" ? HotkeyAction::Decrease
                     : action == L"set"     ? HotkeyAction::Set
+                    : action == L"cycle"   ? HotkeyAction::Cycle
                     : action == L"turnOff" ? HotkeyAction::TurnOff
                     : action == L"panel"   ? HotkeyAction::Panel
                                            : HotkeyAction::Increase;
         hk.value = GetIntSetting(IndexedName(L"hotkeys", i, L"value"));
+        hk.levels = ParseLevelList(
+            GetStringSetting(IndexedName(L"hotkeys", i, L"levels")));
         hk.display = GetStringSetting(IndexedName(L"hotkeys", i, L"display"));
         s.hotkeys.push_back(std::move(hk));
     }
@@ -1464,7 +1527,7 @@ DWORD WINAPI WorkerThread(LPVOID) {
         } else if (probe) {
             // A monitor that answered now has a slider: lay out the panel
             // again. Otherwise only the next try is scheduled.
-            Publish(probeChanged ? SnapshotKind::Enumerated
+            Publish(probeChanged ? SnapshotKind::ProbeFound
                                  : SnapshotKind::Probed);
         }
         if (!enumerate && (refresh || refreshWmi)) {
@@ -3241,14 +3304,32 @@ void ChangeDisplays(const std::vector<UiDisplay*>& targets,
     }
 }
 
+// The level that a cycle hotkey sets the displays to. It starts from their
+// average level, like a linked step, so they all go to the same entry.
+int CycleTarget(const std::vector<int>& levels,
+                const std::vector<UiDisplay*>& targets) {
+    int sum = 0, count = 0;
+    for (auto* d : targets) {
+        if (d->value >= 0) {
+            sum += d->value;
+            count++;
+        }
+    }
+    int current = count ? (int)std::lround(sum / (double)count) : -1;
+    return NextCycleLevel(levels, current);
+}
+
 void OnHotkey(int id, bool levelsFresh = false) {
     if (id < 1 || id > (int)g_settings.hotkeys.size()) {
         return;
     }
     const HotkeyConfig& hk = g_settings.hotkeys[id - 1];
 
+    // Steps and cycles start from the current level, so they need fresh
+    // monitor levels.
     bool relative = hk.action == HotkeyAction::Increase ||
-                    hk.action == HotkeyAction::Decrease;
+                    hk.action == HotkeyAction::Decrease ||
+                    (hk.action == HotkeyAction::Cycle && !hk.levels.empty());
     if (relative && !levelsFresh) {
         bool anyDdc = std::any_of(
             g_displays.begin(), g_displays.end(), [](const UiDisplay& d) {
@@ -3275,6 +3356,11 @@ void OnHotkey(int id, bool levelsFresh = false) {
                 ShowPanel();
             }
             return;
+        case HotkeyAction::Cycle:
+            if (hk.levels.empty()) {
+                return;
+            }
+            break;
         default:
             break;
     }
@@ -3286,6 +3372,9 @@ void OnHotkey(int id, bool levelsFresh = false) {
 
     if (!hk.display.empty()) {
         std::vector<UiDisplay*> targets = MatchDisplays(hk.display);
+        if (hk.action == HotkeyAction::Cycle) {
+            setValue = CycleTarget(hk.levels, targets);
+        }
         ChangeDisplays(targets, delta, setValue, false);
         ShowOsd(targets, nullptr);
         return;
@@ -3302,6 +3391,9 @@ void OnHotkey(int id, bool levelsFresh = false) {
             }
         }
         return;
+    }
+    if (hk.action == HotkeyAction::Cycle) {
+        setValue = CycleTarget(hk.levels, targets);
     }
     ChangeDisplays(targets, delta, setValue, g_linked);
     ShowOsd(targets, g_linked ? nullptr : monitor);
@@ -3750,7 +3842,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
         case WM_APP_SNAPSHOT: {
             auto kind = (SnapshotKind)wParam;
-            bool enumerated = kind == SnapshotKind::Enumerated;
+            // A monitor found by a probe also changes the displays, but only
+            // its own level was read.
+            bool enumerated = kind == SnapshotKind::Enumerated ||
+                              kind == SnapshotKind::ProbeFound;
             g_lastSnapshot = hw::TakeSnapshot();
             RebuildDisplays(g_lastSnapshot, true);
             if (enumerated) {
@@ -3762,7 +3857,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             UpdateTrayTip();
             // Only a read of all displays is fresh enough for the hotkeys
             // that wait for monitor levels.
-            if (kind != SnapshotKind::WmiLevels) {
+            if (kind == SnapshotKind::AllLevels ||
+                kind == SnapshotKind::Enumerated) {
                 g_lastHwReadTick = GetTickCount();
                 if (!g_deferredHotkeys.empty()) {
                     RunDeferredHotkeys();
