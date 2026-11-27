@@ -16,7 +16,10 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Turn off a single monitor: from the new "Turn off a display" submenu of the
   tray menu, or with a "Turn off displays" hotkey whose display setting is
   filled in. Choosing it again turns the monitor on. It uses the DDC/CI power
-  mode, so it works for external monitors, not laptop screens. (#7)
+  mode, so it works for external monitors, not laptop screens. The mod turns
+  the monitor on again when it exits, when Windows turns the displays on
+  again, and at the next start if Windhawk was ended. Brightness changes
+  meanwhile are applied when it's turned on. (#7)
 - Optional: scroll the mouse wheel over the tray icon to change the
   brightness. Off by default, because it needs a system-wide mouse hook; set
   a step (for example 2%) in the settings to turn it on. Unlike the wheel

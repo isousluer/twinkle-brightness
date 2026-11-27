@@ -85,7 +85,10 @@ Use this to try a version that isn't in Windhawk yet.
     a cable.
   - **Turn off displays**
   - **Turn off a display**: turns a single monitor off (DDC/CI only). A
-    checked monitor is off; choose it again to turn it on.
+    checked monitor is off; choose it again to turn it on. The mod also turns
+    it on when it exits, and when Windows turns the displays on again (after
+    sleep, the display timeout or **Turn off displays**). Its brightness isn't
+    changed while it's off; the latest level is applied when it's turned on.
   - **Pause automatic brightness**: temporarily stops the schedule and idle
     dimming.
   - **Copy display info**: copies the name, ID and control method of each

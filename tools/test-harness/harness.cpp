@@ -149,6 +149,8 @@ void RunLogicTests() {
     Check(ParseLevelList(L"20, 50, 100") == std::vector<int>{20, 50, 100}, L"level list: 20, 50, 100");
     Check(ParseLevelList(L" 10%;x, ,150,-5 30 4a") == std::vector<int>{10, 100, 0, 30}, L"level list: blanks/invalid skipped, clamped");
     Check(ParseLevelList(L"").empty() && ParseLevelList(L" , ;").empty(), L"level list: empty");
+    Check(ParseLevelList(L"50, 50, 100, 120") == std::vector<int>{50, 100}, L"level list: repeated neighbors merged");
+    Check(ParseLevelList(L"100, 50, 100") == std::vector<int>{100, 50} && ParseLevelList(L"40, 40") == std::vector<int>{40}, L"level list: last equal to first dropped");
 
     // The next level of a cycle.
     std::vector<int> cycle = {20, 50, 100};
@@ -181,21 +183,48 @@ void RunLogicTests() {
     }
     g_displays.pop_back();
 
+    // Monitors that are off are saved, so that the next start turns them on.
+    ToggleDisplaysPower({&g_displays[1]});
+    Check(StubStorage()[L"displaysOffCount"] == L"1" && StubStorage()[L"displaysOffKey0"] == L"b", L"power: off monitor saved");
+    // A snapshot that includes the requests replaces the UI's state: here the
+    // "off" command failed, so the monitor is on.
+    SyncDisplaysOff({g_displays[0].info, g_displays[1].info});
+    Check(g_displaysOff.empty() && !StubStorage().contains(L"displaysOffCount"), L"power: failed command -> shown as on, save cleared");
+    g_displaysOff = {L"a"};
+    TurnOnDisplaysOff();
+    {
+        std::lock_guard<std::mutex> lock(hw::g_mutex);
+        Check(g_displaysOff.empty() && hw::g_pendingPower[L"a"], L"power: turned on again when the mod exits");
+        hw::g_pendingPower.clear();
+    }
+
+    // The worker doesn't write the level of a monitor that is off, and
+    // keeps it for when it's turned on.
+    hw::HwDisplay off;
+    off.info.key = L"x";
+    off.info.method = Method::Ddc;
+    off.info.off = true;
+    off.info.raw = 50;
+    hw::g_displays = {off};
+    auto failedSets = hw::ApplyAll({{L"x", 30}});
+    Check(failedSets.empty() && hw::g_displays[0].info.raw == 30 && hw::g_displays[0].rawPending, L"power: level of an off monitor kept, not written");
+    hw::g_displays.clear();
+
     // Tray wheel: linked from the average, unlinked each from its own level.
     g_settings.trayScrollStep = 5;
     g_lastHwReadTick = GetTickCount();
     g_displays[0].value = 20; g_displays[1].value = 40;
-    StepFromTrayWheel(2);
+    StepFromTrayWheel(2, nullptr);
     Check(g_displays[0].value == 40 && g_displays[1].value == 40, L"tray wheel linked: avg 30 + 2*5 -> 40/40");
     g_linked = false;
     g_displays[0].value = 20;
-    StepFromTrayWheel(-1);
+    StepFromTrayWheel(-1, nullptr);
     Check(g_displays[0].value == 15 && g_displays[1].value == 35, L"tray wheel unlinked: each -5");
     g_linked = true;
     // Stale monitor levels: the steps wait for a read, then run.
     g_lastHwReadTick = GetTickCount() - 10000;
-    StepFromTrayWheel(1);
-    StepFromTrayWheel(1);
+    StepFromTrayWheel(1, nullptr);
+    StepFromTrayWheel(1, nullptr);
     Check(g_deferredWheelSteps == 2 && g_displays[0].value == 15, L"tray wheel waits for fresh levels");
     RunDeferredHotkeys();
     Check(g_deferredWheelSteps == 0 && g_displays[0].value == 35 && g_displays[1].value == 35, L"tray wheel deferred steps run: avg 25 + 10");
