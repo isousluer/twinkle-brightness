@@ -17,8 +17,10 @@ and this project follows [Semantic Versioning](https://semver.org/).
   tray menu, or with a "Turn off displays" hotkey whose display setting is
   filled in. Choosing it again turns the monitor on. It uses the DDC/CI power
   mode, so it works for external monitors, not laptop screens. (#7)
-- Scroll the mouse wheel over the tray icon to change the brightness, 2% per
-  notch by default. The step can be changed or turned off in the settings.
+- Optional: scroll the mouse wheel over the tray icon to change the
+  brightness. Off by default, because it needs a system-wide mouse hook; set
+  a step (for example 2%) in the settings to turn it on. Unlike the wheel
+  control removed in 1.1.0, it changes all displays, also while unlinked.
 
 ### Fixed
 

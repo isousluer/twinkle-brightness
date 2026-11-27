@@ -53,8 +53,9 @@ re-imagined as a lightweight Windhawk mod with no Electron runtime.
   them as soon as you touch the mouse or keyboard.
 - **Per-display options:** custom names, hiding displays, and min/max
   brightness to normalize displays that are brighter or darker than others.
-- **Scroll over the tray icon:** change the brightness with the mouse wheel
-  without opening the panel.
+- **Scroll over the tray icon (optional):** change the brightness with the
+  mouse wheel without opening the panel. Off by default, because it needs a
+  system-wide mouse hook; turn it on by setting a step in the settings.
 - **Tray menu:** refresh displays, turn all displays or a single monitor off,
   pause automatic brightness, and copy display names/IDs for use in the
   settings.
@@ -153,11 +154,11 @@ This mod is not affiliated with Twinkle Tray or its author.
   $name:tr-TR: Tepsi simgesinde parlaklık seviyesini göster
   $description: The sun's rays light up with the brightness level, like a gauge
   $description:tr-TR: Güneşin ışınları, bir gösterge gibi parlaklık seviyesine göre yanar
-- trayScrollStep: 2
+- trayScrollStep: 0
   $name: Brightness step when scrolling over the tray icon (%)
   $name:tr-TR: Tepsi simgesinin üzerinde kaydırınca parlaklık adımı (%)
-  $description: Scroll the mouse wheel over the sun icon to change the brightness. 0 turns this off.
-  $description:tr-TR: Parlaklığı değiştirmek için fare tekerleğini güneş simgesinin üzerinde kaydırın. 0 bunu kapatır.
+  $description: Scroll the mouse wheel over the sun icon to change the brightness, for example 2% per notch. 0 (the default) turns this off. When it's on, the mod watches the mouse wheel system-wide with a low-level mouse hook.
+  $description:tr-TR: Parlaklığı değiştirmek için fare tekerleğini güneş simgesinin üzerinde kaydırın, örneğin her tıkta %2. 0 (varsayılan) bunu kapatır. Açıkken mod, fare tekerleğini sistem genelinde düşük seviyeli bir fare kancasıyla izler.
 - hotkeys:
   - - keys: Ctrl+Alt+Up
       $name: Key combination
@@ -479,7 +480,7 @@ struct Settings {
     bool showOsd = true;
     OsdPosition osdPosition = OsdPosition::BottomCenter;
     bool trayIconLevel = true;
-    int trayScrollStep = 2;  // 0 = off
+    int trayScrollStep = 0;  // 0 = off (the default)
     std::vector<HotkeyConfig> hotkeys;
     std::vector<ScheduleEntry> schedule;
     int transitionSeconds = 30;
